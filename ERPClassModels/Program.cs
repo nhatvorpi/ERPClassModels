@@ -7,8 +7,6 @@
     public int OrderStatus { get; set; }
     public DateTime Deadline { get; set; }
     public List<FinishedGood> FinishedGood { get; set; }
-
-    // Other proterties and methods related to Sale Order
 }
 
 public class FinishedGood : SaleOrder
@@ -21,8 +19,6 @@ public class FinishedGood : SaleOrder
     public int Quality { get; set; }
 
     public List<BatchRecord> BatchRecords { get; set; }
-
-    // Other proterties and methods related to Finished Good
 }
 
 public class BatchRecord : FinishedGood
@@ -31,8 +27,6 @@ public class BatchRecord : FinishedGood
     public int Size { get; set; }
     public int Status { get; set; }
     public List<RawMaterial> RawMaterials { get; set; }
-
-    // Other properties and methods related to Batch Record
 }
 
 public class RawMaterial : BatchRecord
@@ -45,13 +39,9 @@ public class RawMaterial : BatchRecord
     public int Quantity { get; set; }
 
     public List<WarehouseLot> WarehouseLots { get; set; }
-
-    // Other properties and methods related to Raw Material
 }
 
 public class WarehouseLot : RawMaterial
 {
     public int LodID { get; set;}
-
-    //Other properties and methods related to Warehouse Lot
 }
