@@ -30,11 +30,6 @@ public class BatchRecord : FinishedGood
     public int RecordID { get; set; }
     public int Size { get; set; }
     public int Status { get; set; }
-    public DateTime StartDate { get; set; }
-    public DateTime EndDate { get; set; }
-    public int BRTotal { get; set; } // Total number of Batch Records of this set
-    public int BRNumberInQueue { get; set; } // The number in queue of this BR in the whole set
-
     public List<RawMaterial> RawMaterials { get; set; }
 
     // Other properties and methods related to Batch Record
