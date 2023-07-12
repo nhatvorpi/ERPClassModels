@@ -1,47 +1,136 @@
-﻿public class SaleOrder
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data.SqlClient;
+
+#region connection string
+string connectionString_Users = "Data Source=192.168.88.8;Initial Catalog=ERPTest1;User ID=erptestAdmin;Password=!@#QWEasd";
+SqlConnection connection = new SqlConnection(connectionString_Users);
+#endregion
+
+#region methods
+static List<int> GetUserInputList()
 {
-    public int OrderID { get; set; }
-    public string CustomerID { get; set; }
-    public DateTime CreatedDate { get; set; }
-    public DateTime UpdatedDate { get; set; }
-    public int OrderStatus { get; set; }
-    public DateTime Deadline { get; set; }
-    public List<FinishedGood> FinishedGood { get; set; }
+    List<int> inputList = new List<int>();
+
+    Console.Write("Enter the size of the list: ");
+    int size = int.Parse(Console.ReadLine());
+
+    for (int i = 0; i < size; i++)
+    {
+        Console.Write($"Enter element {i + 1}: ");
+        int element = int.Parse(Console.ReadLine());
+        inputList.Add(element);
+    }
+
+    return inputList;
 }
 
-public class FinishedGood : SaleOrder
+static string MaxSOnumber(SqlConnection connection)
 {
-    public int GoodID { get; set; }
-    public int Status { get; set; }
-    public DateTime CreatedDate { get;set; }
-    public DateTime DeadLine { get; set; }
-    public bool IsBulk { get; set; }
-    public int Quality { get; set; }
+    /* author: Nhat Vo - 7/11/2023
+         * return the current SO number, or null of the database is empty
+    */
+    connection.Open();
+    int SO_number = 0;
+    string query = "SELECT MAX(SOnumber) FROM [HW-SODetail]";
+    SqlCommand command = new SqlCommand(query, connection);
+    string currentSOnumber = command.ExecuteScalar().ToString();
+    connection.Close();
+    int? result = null;
 
-    public List<BatchRecord> BatchRecords { get; set; }
+    if (!string.IsNullOrEmpty(currentSOnumber))
+    {
+        if(int.TryParse(currentSOnumber, out int parsedNumber))
+        {
+            result = parsedNumber;
+        }
+    }
+
+    if (result.HasValue)
+    {
+        return result.ToString();
+    }
+    else
+    {
+        return "null";
+    }
 }
 
-public class BatchRecord : FinishedGood
+static int SONumGenerator(SqlConnection connection)
 {
-    public int RecordID { get; set; }
-    public int Size { get; set; }
-    public int Status { get; set; }
-    public List<RawMaterial> RawMaterials { get; set; }
+    string maxresult = MaxSOnumber(connection);
+    if (maxresult == "null")
+    {
+        return 1;
+    }
+    else
+    {
+        int.TryParse(maxresult, out int newSOnum);
+        return newSOnum + 1;
+    }
 }
 
-public class RawMaterial : BatchRecord
-{
-    public int MaterialID { get; set; } 
-    public string Name { get; set; }
-    public DateTime PurchasedDate { get; set; }
-    public DateTime ExpirationDate { get; set; }
-    public int QualityLevel { get; set; }
-    public int Quantity { get; set; }
 
-    public List<WarehouseLot> WarehouseLots { get; set; }
-}
 
-public class WarehouseLot : RawMaterial
+
+
+#region body
+void body()
 {
-    public int LodID { get; set;}
+    //Menu option:
+    Console.WriteLine("Please selection an option: ");
+    Console.WriteLine("0. Exit the program");
+    Console.WriteLine("1. New SO");
+    Console.WriteLine("2. View SO");
+
+    string input = Console.ReadLine();
+
+    int choice;
+    if (int.TryParse(input, out choice))
+    {
+        Console.WriteLine("You entered: " + choice);
+    }
+    else
+    {
+        Console.WriteLine("Invalid input. Please enter a valid integer number.");
+    }
+    switch (choice)
+    {
+        case 1:
+            //Generate new SO_number
+
+            //Create new SO with SO_number
+
+            //Write new SO into HW-SOHeader
+
+            //Prompt user to input FG_code and put it in SO, recursive until user exit
+
+            //Write FG_code into HW-SODetail
+            body();
+            break;
+        case 2:
+            //Prompt user to input SO_number
+
+            //Connect to DB
+
+            //Present
+            body();
+            break;
+        case 3:
+            Console.WriteLine(SONumGenerator(connection));
+            body();
+            break;
+        case 0:
+            Console.WriteLine("Exiting program");
+            break;
+        default:
+            Console.WriteLine("Invalid input");
+            break;
+    }
 }
+#endregion
+
+body();
